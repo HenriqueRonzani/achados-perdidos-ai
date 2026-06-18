@@ -8,8 +8,8 @@ type RouteContext = {
 export async function GET(_: Request, context: RouteContext) {
   try {
     const filters = await context.params;
-    const response = getItems(filters)
-    return NextResponse.json({ response })
+    const response = await getItems(filters)
+    return NextResponse.json(response)
   } catch (error) {
     console.log(error)
     return NextResponse.json({ error: 'Erro durante a consulta' }, { status: 500 })
