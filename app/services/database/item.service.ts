@@ -1,3 +1,4 @@
+import { AddItemForm } from "@/app/(main)/items/add-item-modal";
 import { neon } from "@neondatabase/serverless";
 
 type OptionalString = string | undefined
@@ -5,7 +6,7 @@ type OptionalString = string | undefined
 export type ItemsFilterType = {
   name: OptionalString
   description: OptionalString
-  category: OptionalString
+  tags: OptionalString
   location: OptionalString
 }
 
@@ -32,14 +33,25 @@ export const getItems = async (filters?: ItemsFilterType) => {
   const { conditions, values } = makeDynamicFilters(filters)
 
   let queryString = `SELECT * FROM items`
-  console.log(filters)
   if (conditions.length > 0) {
     queryString += ` WHERE ${conditions.join(' OR ')}`
   }
 
-  console.log(queryString)
-
   const data = await sql.query(queryString, values)
 
   return data
+}
+
+export const insertItem = async (userId: number, item: AddItemForm, aiTags: string | null) => {
+  const sql = neon(process.env.DATABASE_URL as string)
+
+  const result = await sql`
+    INSERT INTO items
+    (name, description, status, location, date_reported, date_claimed, image_url, user_id, tags)
+    VALUES
+    (${item.name}, ${item.description}, 'open', ${item.location}, NOW(), null, ${item.image_url}, ${userId}, ${aiTags})
+    RETURNING *;
+  `
+
+  return result[0];
 }
