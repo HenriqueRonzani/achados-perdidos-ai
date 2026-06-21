@@ -10,6 +10,7 @@ type Props<T> = ComponentProps<"input"> & {
   path: string;
   errors: z.ZodError["issues"] | undefined;
   label?: string;
+  fieldPosition?: 'row' | 'col'
 };
 
 const getFieldRecursive = (data: any, fields: string[]): any => {
@@ -45,6 +46,7 @@ const CustomInput = <T extends Record<string, any>>({
   path,
   errors,
   label,
+  fieldPosition = 'row',
   ...rest
 }: Props<T>) => {
   const fields = path.split(".");
@@ -54,24 +56,24 @@ const CustomInput = <T extends Record<string, any>>({
   )?.message
 
   return (
-    <div className="flex w-full gap-4 items-start py-2">
+    <div className={`flex flex-${fieldPosition} w-full gap-4 items-start py-2`}>
       {label && <Label>{label}</Label>}
       <div className="flex-1 flex flex-col gap-1 w-full">
-      <Input
-        className="w-full"
-        value={value}
-        onChange={(e) => {
-          setForm((prevForm) =>
-            setFieldRecursive(prevForm, fields, e.target.value),
-          );
-        }}
-        {...rest}
-      />
-      {errorMessage && (
-        <p className="text-sm font-medium text-danger pl-1 animate-appearance-in">
-          {errorMessage}
-        </p>
-      )}
+        <Input
+          className="w-full"
+          value={value}
+          onChange={(e) => {
+            setForm((prevForm) =>
+              setFieldRecursive(prevForm, fields, e.target.value),
+            );
+          }}
+          {...rest}
+        />
+        {errorMessage && (
+          <p className="text-sm font-medium text-danger pl-1 animate-appearance-in">
+            {errorMessage}
+          </p>
+        )}
       </div>
     </div>
   );

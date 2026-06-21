@@ -13,16 +13,15 @@ export async function POST(request: Request) {
 
     if (!user || !user.password) {
       return NextResponse.json(
-        { error: 'Credenciais inválidas' }, 
-        { status: 401 }
-      )
+        { error: 'Credenciais inválidas' },
+        { status: 401 })
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password)
 
     if (!isValidPassword) {
       return NextResponse.json(
-        { error: 'Credenciais inválidas' }, 
+        { error: 'Credenciais inválidas' },
         { status: 401 }
       )
     }
@@ -38,7 +37,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Erro na rota de login:", error)
     return NextResponse.json(
-      { error: 'Erro interno no servidor' }, 
+      { error: 'Erro interno no servidor' },
       { status: 500 }
     )
   }
