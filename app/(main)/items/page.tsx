@@ -6,8 +6,9 @@ import { getItems } from "@/app/services/api/item.service";
 import { Item } from "@/app/types/entities";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { Button, Card } from "@heroui/react";
+import { Button, Card, Label } from "@heroui/react";
 import dayjs from "dayjs";
+import { SearchField } from '@heroui/react';
 
 const STATUS_LABEL: Record<Item["status"], string> = {
   open: "Em aberto",
@@ -48,20 +49,24 @@ const columns: ColumnDef<Item>[] = [
 
 const ItemsPage = () => {
   useAuthGuard();
+  const [search, setSearch] = useState<string>('')
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
     const loadItems = async () => {
       try {
-        const response = await getItems();
+        const response = await getItems(search || undefined);
+        console.log(response.data.length)
         setItems(response.data);
       } catch (error: unknown) {
         console.log(error);
       }
     };
 
+    console.log(search)
+
     loadItems();
-  }, []);
+  }, [search]);
 
   const addItem = async () => {
     // TODO: Add modal de criação de item
@@ -69,9 +74,9 @@ const ItemsPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full">
+    <div className="flex flex-1 h-full w-full">
       <Card className="w-full mx-auto border border-default-100 shadow-md rounded-2xl flex flex-col gap-6">
-        <div className="w-full mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="w-full mx-auto flex flex-col gap-4">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
               Achados e Perdidos
@@ -80,7 +85,15 @@ const ItemsPage = () => {
               Controle e gerenciamento de itens registrados.
             </p>
           </div>
-          <div>
+          <div className="flex flex-row justify-between items-center">
+            <SearchField name="search" value={search} onChange={setSearch}>
+              <Label className="font-bold">Pesquisar</Label>
+              <SearchField.Group>
+                <SearchField.SearchIcon />
+                <SearchField.Input className="w-70" placeholder="Pesquisar..." />
+                <SearchField.ClearButton />
+              </SearchField.Group>
+            </SearchField>
             <Button className="font-medium shadow-sm" onClick={addItem}>
               Novo Registro
             </Button>

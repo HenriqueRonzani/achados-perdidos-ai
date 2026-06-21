@@ -13,12 +13,12 @@ const makeDynamicFilters = (filters?: object) => {
   const conditions: string[] = []
   const values: unknown[] = []
 
-  Object.entries(filters ?? {}).forEach(([field, value], index) => {
+  Object.entries(filters ?? {}).forEach(([field, value]) => {
     if (!/^[a-zA-Z0-9_]+$/.test(field)) return;
 
     if (value !== undefined && value !== null) {
-      conditions.push(`${field} = $${index + 1}`);
-      values.push(value);
+      conditions.push(`${field} ILIKE $${values.length + 1}`);
+      values.push(`%${value}%`);
     }
   }
   );
@@ -32,10 +32,12 @@ export const getItems = async (filters?: ItemsFilterType) => {
   const { conditions, values } = makeDynamicFilters(filters)
 
   let queryString = `SELECT * FROM items`
-
+  console.log(filters)
   if (conditions.length > 0) {
-    queryString += ` WHERE ${conditions.join(' AND ')}`
+    queryString += ` WHERE ${conditions.join(' OR ')}`
   }
+
+  console.log(queryString)
 
   const data = await sql.query(queryString, values)
 
