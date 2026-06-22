@@ -1,4 +1,5 @@
 import { AddItemForm } from "@/app/(main)/items/add-item-modal";
+import { EditItemForm } from "@/app/(main)/items/edit-item-modal";
 import { neon } from "@neondatabase/serverless";
 
 type OptionalString = string | undefined
@@ -36,6 +37,7 @@ export const getItems = async (filters?: ItemsFilterType) => {
   if (conditions.length > 0) {
     queryString += ` WHERE ${conditions.join(' OR ')}`
   }
+  queryString += ' ORDER BY id'
 
   const data = await sql.query(queryString, values)
 
@@ -50,6 +52,35 @@ export const insertItem = async (userId: number, item: AddItemForm, aiTags: stri
     (name, description, status, location, date_reported, date_claimed, image_url, user_id, tags)
     VALUES
     (${item.name}, ${item.description}, 'open', ${item.location}, NOW(), null, ${item.image_url}, ${userId}, ${aiTags})
+    RETURNING *;
+  `
+
+  return result[0];
+}
+
+export const archiveItem = async(itemId: number, status: string) => {
+  const sql = neon(process.env.DATABASE_URL as string)
+
+  const result = await sql`
+    UPDATE items
+    SET status = ${status}
+    WHERE id = ${itemId}
+    RETURNING *
+  `
+  console.log(result)
+  return result[0];
+}
+
+export const updateItem = async (itemId: number, item: EditItemForm) => {
+  const sql = neon(process.env.DATABASE_URL as string)
+
+  const result = await sql`
+    UPDATE items
+    SET 
+      name = ${item.name}, 
+      description = ${item.description}, 
+      location = ${item.location}
+    WHERE id = ${itemId}
     RETURNING *;
   `
 
