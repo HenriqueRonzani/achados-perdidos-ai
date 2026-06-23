@@ -2,20 +2,19 @@
 
 import { DataTable } from "@/app/components/data-table";
 import { useAuthGuard } from "@/app/hooks/auth-guard-hook";
-import { getUsers } from "@/app/services/api/user.service";
-import { User } from "@/app/types/entities";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { Button, Card, Label, SearchField } from "@heroui/react";
 import EditUserModal, { EditUserForm } from "./edit-user-modal";
+import { getUsers, SafeUser } from "@/app/services/api/user.service";
 
 const UsersPage = () => {
   useAuthGuard();
   const [search, setSearch] = useState<string>('')
-  const [users, setUsers] = useState<User[]>([]);
   const [editOpen, setEditOpen] = useState<boolean>(false)
   const [forceReload, setForceReload] = useState<number>(0)
   const [editUser, setEditUser] = useState<EditUserForm | undefined>(undefined)
+  const [users, setUsers] = useState<SafeUser[]>([]);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -44,7 +43,7 @@ const UsersPage = () => {
     setEditOpen(false)
   }
 
-  const columns: ColumnDef<User>[] = [
+  const columns: ColumnDef<SafeUser>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -55,6 +54,7 @@ const UsersPage = () => {
     },
     {
       header: "Ações",
+      size: 50,
       cell: (info) => {
         const row = info.row.original
 
@@ -96,8 +96,8 @@ const UsersPage = () => {
           </div>
         </div>
         <div className="p-6">
-          <DataTable columns={columns} data={users ?? []} />
         </div>
+          <DataTable columns={columns} data={users ?? []} tableClassName="table-fixed" />
       </Card>
 
       {editUser && (

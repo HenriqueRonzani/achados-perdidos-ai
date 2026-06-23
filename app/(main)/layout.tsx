@@ -8,7 +8,7 @@ export default function PrivateLayout({
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-7xl p-6">{children}</main>
+      <main className="mx-auto max-w-5/6 p-6">{children}</main>
     </>
   );
 }

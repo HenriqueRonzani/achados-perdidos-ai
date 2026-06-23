@@ -3,6 +3,32 @@ import { neon } from '@neondatabase/serverless'
 
 const sql = neon(process.env.DATABASE_URL!)
 
+type OptionalString = string | undefined
+
+export type UsersFilterType = {
+  name: OptionalString
+  email: OptionalString
+}
+
+export type SafeUser = Omit<User, "password">
+
+const makeDynamicFilters = (filters?: object) => {
+  const conditions: string[] = []
+  const values: unknown[] = []
+
+  Object.entries(filters ?? {}).forEach(([field, value]) => {
+    if (!/^[a-zA-Z0-9_]+$/.test(field)) return;
+
+    if (value !== undefined && value !== null) {
+      conditions.push(`${field} ILIKE $${values.length + 1}`);
+      values.push(`%${value}%`);
+    }
+  }
+  );
+
+  return { conditions, values }
+}
+
 export const getUserByEmail = async (
   email: string,
 ): Promise<User | null> => {
@@ -16,28 +42,6 @@ export const getUserByEmail = async (
   return users[0] as User ?? null
 }
 
-export const getUsers = async (q?: string) => {
-  const sql = neon(process.env.DATABASE_URL as string)
-
-  if (q) {
-    const data = await sql`
-      SELECT id, name, email
-      FROM users
-      WHERE name ILIKE ${'%' + q + '%'}
-         OR email ILIKE ${'%' + q + '%'}
-      ORDER BY id
-    `
-    return data
-  }
-
-  const data = await sql`
-    SELECT id, name, email
-    FROM users
-    ORDER BY id
-  `
-  return data
-}
-
 export const updateUser = async (userId: number, name: string, email: string) => {
   const sql = neon(process.env.DATABASE_URL as string)
 
@@ -49,4 +53,19 @@ export const updateUser = async (userId: number, name: string, email: string) =>
   `
 
   return result[0]
+}
+
+export const getUsers = async (filters?: UsersFilterType): Promise<SafeUser[]> => {
+  const sql = neon(process.env.DATABASE_URL as string)
+
+  const { conditions, values } = makeDynamicFilters(filters)
+
+  let queryString = `SELECT id, name, email FROM users`
+  if (conditions.length > 0) {
+    queryString += ` WHERE ${conditions.join(' OR ')}`
+  }
+
+  const data = await sql.query(queryString, values)
+
+  return data as SafeUser[]
 }
