@@ -60,7 +60,7 @@ export const getUsers = async (filters?: UsersFilterType): Promise<SafeUser[]> =
 
   const { conditions, values } = makeDynamicFilters(filters)
 
-  let queryString = `SELECT id, name, email FROM users`
+  let queryString = `SELECT id, name, email FROM users ORDER BY id`
   if (conditions.length > 0) {
     queryString += ` WHERE ${conditions.join(' OR ')}`
   }
