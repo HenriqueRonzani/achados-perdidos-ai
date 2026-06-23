@@ -1,4 +1,4 @@
-import { getUsers, UsersFilterType } from "@/app/services/database/user.service"
+import { getUsers, getUserByEmail, createUser, UsersFilterType } from "@/app/services/database/user.service"
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -14,5 +14,27 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.log(error)
     return NextResponse.json({ error: 'Erro durante a consulta' }, { status: 500 })
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { name, email, password } = await request.json();
+    
+    if (!name || !email) {
+      return NextResponse.json({ error: 'Nome e E-mail são obrigatórios.' }, { status: 400 });
+    }
+
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return NextResponse.json({ error: 'Este e-mail já está em uso.' }, { status: 400 });
+    }
+
+    const newUser = await createUser(name, email, password || ""); 
+
+    return NextResponse.json(newUser, { status: 201 });
+  } catch (error) {
+    console.error("Erro no POST /api/app/users:", error);
+    return NextResponse.json({ error: 'Erro ao salvar o usuário' }, { status: 500 });
   }
 }
