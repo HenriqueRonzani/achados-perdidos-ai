@@ -5,10 +5,11 @@ import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack
 interface DataTableProps<TData> {
   data: TData[]
   columns: ColumnDef<TData>[]
+  tableClassName?: string
 }
 
-export function DataTable<TData>({ data, columns }: DataTableProps<TData>) {
-  // eslint-disable-next-line react-hooks/incompatible-library
+export function DataTable<TData>({ data, columns, tableClassName = '' }: DataTableProps<TData>) {
+ 
   const table = useReactTable({
     data,
     columns,
@@ -17,7 +18,7 @@ export function DataTable<TData>({ data, columns }: DataTableProps<TData>) {
 
   return (
     <div className="overflow-hidden rounded-lg border">
-      <table className="w-full">
+      <table className={`w-full ${tableClassName}`}>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="border-b">
