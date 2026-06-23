@@ -9,3 +9,8 @@ export const getUsers = async (q?: string) => {
   })
   return { data: response.data } as { data: SafeUser[] }
 }
+
+export const updateUser = async (userId: number, payload: { name: string; email: string }) => {
+  const response = await api.put(`/app/users/${userId}`, payload)
+  return response.data
+}

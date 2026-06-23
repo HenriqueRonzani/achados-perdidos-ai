@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import { SearchField } from '@heroui/react';
 import AddItemModal from "./add-item-modal";
 import EditItemModal, { EditItemForm } from "./edit-item-modal";
+import Image from "next/image";
 
 const STATUS_LABEL: Record<Item["status"], string> = {
   open: "Em aberto",
@@ -111,10 +112,12 @@ const ItemsPage = () => {
                 className="cursor-pointer overflow-hidden rounded-md border border-gray-200 transition-transform hover:scale-105"
                 style={{ width: '100px', height: '100px', display: 'block' }}
               >
-                <img
+                <Image
                   src={url}
                   alt="Miniatura do item"
                   className="h-full w-full"
+                  width={'100'}
+                  height={'100'}
                   style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                 />
               </div>
@@ -122,8 +125,10 @@ const ItemsPage = () => {
 
             <PopoverContent className="p-1" placement="end">
               <div className="w-75 h-75 overflow-hidden rounded-lg">
-                <img
+                <Image
                   src={url}
+                  width={'100'}
+                  height={'100'}
                   alt="Visualização expandida"
                   className="w-full h-full object-cover"
                 />

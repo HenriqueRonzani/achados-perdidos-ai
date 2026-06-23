@@ -9,7 +9,7 @@ interface DataTableProps<TData> {
 }
 
 export function DataTable<TData>({ data, columns, tableClassName = '' }: DataTableProps<TData>) {
- 
+// eslint-disable-next-line react-hooks/incompatible-library 
   const table = useReactTable({
     data,
     columns,
@@ -18,12 +18,16 @@ export function DataTable<TData>({ data, columns, tableClassName = '' }: DataTab
 
   return (
     <div className="overflow-hidden rounded-lg border">
-      <table className={`w-full ${tableClassName}`}>
+<table className={`w-full table-fixed ${tableClassName}`}>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="border-b">
               {headerGroup.headers.map((header) => (
-                <th key={header.id} className="px-4 py-3 text-left font-medium">
+                <th 
+                  key={header.id} 
+                  style={{ width: header.getSize() }} 
+                  className="px-4 py-3 text-left font-medium"
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}

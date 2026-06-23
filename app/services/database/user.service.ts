@@ -42,12 +42,25 @@ export const getUserByEmail = async (
   return users[0] as User ?? null
 }
 
+export const updateUser = async (userId: number, name: string, email: string) => {
+  const sql = neon(process.env.DATABASE_URL as string)
+
+  const result = await sql`
+    UPDATE users
+    SET name = ${name}, email = ${email}
+    WHERE id = ${userId}
+    RETURNING id, name, email;
+  `
+
+  return result[0]
+}
+
 export const getUsers = async (filters?: UsersFilterType): Promise<SafeUser[]> => {
   const sql = neon(process.env.DATABASE_URL as string)
 
   const { conditions, values } = makeDynamicFilters(filters)
 
-  let queryString = `SELECT id, name, email FROM users`
+  let queryString = `SELECT id, name, email FROM users ORDER BY id`
   if (conditions.length > 0) {
     queryString += ` WHERE ${conditions.join(' OR ')}`
   }
