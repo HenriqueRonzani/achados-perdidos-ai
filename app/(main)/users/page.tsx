@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Button, Card, Label, SearchField } from "@heroui/react";
 import EditUserModal, { EditUserForm } from "./edit-user-modal";
 import { getUsers, SafeUser } from "@/app/services/api/user.service";
+import AddUserModal from "./add-user-modal";
 
 const UsersPage = () => {
   useAuthGuard();
@@ -15,6 +16,7 @@ const UsersPage = () => {
   const [forceReload, setForceReload] = useState<number>(0)
   const [editUser, setEditUser] = useState<EditUserForm | undefined>(undefined)
   const [users, setUsers] = useState<SafeUser[]>([]);
+  const [addOpen, setAddOpen] = useState<boolean>(false)
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -41,6 +43,10 @@ const UsersPage = () => {
   const cancelEdit = () => {
     setEditUser(undefined)
     setEditOpen(false)
+  }
+
+  const onUserAdded = () => {
+    setForceReload(forceReload + 1)
   }
 
   const columns: ColumnDef<SafeUser>[] = [
@@ -84,7 +90,7 @@ const UsersPage = () => {
               Controle e gerenciamento de usuários do sistema.
             </p>
           </div>
-          <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row justify-between items-end gap-4">
             <SearchField name="search" value={search} onChange={setSearch}>
               <Label className="font-bold">Pesquisar</Label>
               <SearchField.Group>
@@ -93,11 +99,22 @@ const UsersPage = () => {
                 <SearchField.ClearButton />
               </SearchField.Group>
             </SearchField>
+
+            <Button
+              color="primary"
+              onClick={() => setAddOpen(true)}
+              className="flex flex-row gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Novo Usuário
+            </Button>
           </div>
         </div>
         <div className="p-6">
         </div>
-          <DataTable columns={columns} data={users ?? []} tableClassName="table-fixed" />
+        <DataTable columns={columns} data={users ?? []} tableClassName="table-fixed" />
       </Card>
 
       {editUser && (
@@ -109,6 +126,11 @@ const UsersPage = () => {
           user={editUser}
         />
       )}
+      <AddUserModal 
+        isOpen={addOpen}
+        setIsOpen={setAddOpen}
+        onAdd={onUserAdded} 
+      />
     </div>
   );
 };

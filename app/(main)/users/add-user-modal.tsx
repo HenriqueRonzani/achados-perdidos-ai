@@ -49,9 +49,8 @@ const AddUserModal = ({ isOpen, setIsOpen, onAdd }: Props) => {
       clearForm()
       onAdd()
       toast('Usuário criado com sucesso!', { variant: "success" })
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error?.message : "Houve um erro";
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || error.message || "Houve um erro";
       toast(errorMessage, { variant: "danger" })
     } finally {
       setLoading(false)
@@ -64,7 +63,13 @@ const AddUserModal = ({ isOpen, setIsOpen, onAdd }: Props) => {
   }
 
   return (
-    <Modal.Backdrop isOpen={isOpen} onOpenChange={setIsOpen}>
+    <Modal.Backdrop
+      isOpen={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) clearForm();
+      }}
+    >
       <Modal.Container>
         <Modal.Dialog>
           <Modal.CloseTrigger onClick={clearForm} isDisabled={loading} />

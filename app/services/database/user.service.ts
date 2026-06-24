@@ -69,3 +69,15 @@ export const getUsers = async (filters?: UsersFilterType): Promise<SafeUser[]> =
 
   return data as SafeUser[]
 }
+
+export const createUser = async (name: string, email: string, passwordHash: string = "") => {
+  const sql = neon(process.env.DATABASE_URL as string)
+
+  const result = await sql`
+    INSERT INTO users (name, email, password)
+    VALUES (${name}, ${email}, ${passwordHash})
+    RETURNING id, name, email;
+  `
+
+  return result[0] as SafeUser
+}
