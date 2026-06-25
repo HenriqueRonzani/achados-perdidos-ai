@@ -67,3 +67,23 @@ npm run dev
 
 4. **Acesse:**
 O projeto estará disponível no seu navegador, no endereço `http://localhost:3000`.
+
+
+
+## 🤖 Como testar a feature de Inteligência Artificial
+A geração automática de tags via IA é o grande destaque do sistema. Para testá-la na prática, siga o passo a passo abaixo:
+
+1. Acesse o Sistema:
+Após iniciar o servidor (npm run dev), abra a aplicação e faça login utilizando e-mail e senha.
+
+2. Acesse o Gerenciamento de Itens:
+Ao fazer o login, você será redirecionado para a Dashboard principal. Lá, clique na opção para gerenciar os Itens.
+
+3. Cadastre um Novo Objeto com Imagem:
+Clique no botão para registrar um novo item. Preencha o nome, descrição, local onde foi encontrado e faça o upload de uma imagem do objeto.
+
+4. A Mágica Acontece:
+Quando você salvar o registro, o sistema enviará a descrição e a imagem para o modelo de visão do Groq nos bastidores. A IA vai analisar tudo e gerar tags invisíveis (como cor predominante, tipo de material, marca, estilo, etc.) que ficarão atreladas ao seu item no banco de dados.
+
+5. Teste a Pesquisa:
+Agora, na barra de pesquisa da tela de itens, tente buscar por uma característica do objeto que você não digitou no nome ou na descrição, mas que estava visível na imagem (por exemplo, digite "couro", "vermelho", "eletrônico"). O item deve aparecer nos resultados, comprovando que a IA catalogou as características visuais corretamente!
