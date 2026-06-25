@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Achados e Perdidos
 
-## Getting Started
+Este é um sistema web para o gerenciamento e controle de itens achados e perdidos. O projeto permite o cadastro e autenticação de usuários, além do registro completo de objetos perdidos com suporte a upload de imagens. Um dos grandes diferenciais é a integração com inteligência artificial para a geração automática de tags identificadoras dos itens, facilitando a catalogação e a busca.
 
-First, run the development server:
+## 🚀 Tecnologias e Bibliotecas Utilizadas
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+O projeto foi construído utilizando as seguintes tecnologias:
+
+* **Next.js**: Framework React escolhido para a construção das interfaces e da API.
+
+
+* **Neon Database**: Banco de dados serverless escalável para o armazenamento das entidades (Usuários e Itens).
+
+
+* **Jose**: Biblioteca utilizada para a geração e verificação de tokens JWT (JSON Web Tokens), garantindo rotas seguras e autenticação eficiente.
+
+
+* **Bcryptjs**: Responsável pela criptografia (hash) das senhas dos usuários no banco de dados, assegurando a proteção das credenciais.
+
+
+* **Groq SDK**: Utilizado para conectar o sistema ao modelo LLM que analisa imagens e descrições para gerar tags automáticas (como cor, tipo, marca, etc.) para os itens cadastrados.
+
+
+* **HeroUI / Tailwind CSS**: Componentes visuais e estilização de interface.
+
+---
+
+## ⚙️ Variáveis de Ambiente
+
+Para o correto funcionamento da aplicação, é necessário configurar as variáveis de ambiente.
+
+Crie um arquivo chamado `.env.local` na raiz do projeto e preencha as seguintes chaves:
+
+```env
+# Chave secreta para assinatura dos tokens JWT na autenticação
+JWT_SECRET=sua_chave_secreta_aqui
+
+# URL de conexão fornecida pelo seu banco de dados Neon
+DATABASE_URL=sua_url_do_banco_aqui
+
+# Chave da API do Groq para geração de tags inteligentes usando IA
+GROQ_API_KEY=sua_api_key_do_groq_aqui
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Como rodar o projeto
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Instale as dependências:**
+Após clonar o repositório, abra o terminal na pasta do projeto e instale as dependências via npm (ou seu gerenciador de pacotes favorito):
+```bash
+npm install
 
-## Learn More
+```
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Configure o `.env.local`:**
+Certifique-se de ter criado o arquivo `.env.local` na raiz do projeto contendo as variáveis citadas acima.
+3. **Inicie o servidor de desenvolvimento:**
+Execute o comando abaixo para rodar a aplicação:
+```bash
+npm run dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Acesse:**
+O projeto estará disponível no seu navegador, no endereço `http://localhost:3000`.
